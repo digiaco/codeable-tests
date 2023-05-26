@@ -1,0 +1,97 @@
+name: Dev deployment
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+    - uses: actions/checkout@v2
+   
+  # Add auto tag      
+    - name: Bump version and push tag
+      uses: anothrNick/github-tag-action@v1
+     
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true 
+  # Add node
+    - name: Setup Node
+      uses: actions/setup-node@v3
+      with:
+        version: 18
+  # Speedup build time      
+    - name: Caching Sages
+      id: sage-cache-build
+      uses: actions/cache@v2
+      with:
+        path: |
+          wp_data/wp-content/themes/sage/public
+          wp_data/wp-content/themes/sage/.cache
+          wp_data/wp-content/themes/sage/node_modules
+        key: ${{ runner.os }}-sage-orgbuild-site-build-${{ github.run_id }}
+        restore-keys: |
+          ${{ runner.os }}-sage-orgbuild-site-build-
+    # Install dependencies    
+    - name: Install Sage dependencies
+      working-directory: wp_data/wp-content/themes/sage
+      run: |
+        composer install -o
+        yarn
+    # Build sage template    
+    - name: Build Sage
+      working-directory: wp_data/wp-content/themes/sage
+      run: 
+        yarn build     
+    # Synch WP      
+    - name: Sync WP
+      env:
+        dest: '${{secrets.DEPLOY_USERNAME}}@${{secrets.HOST_IP}}:${{ github.event.repository.name }}/wp_data/wp-content/'
+      run: |
+        echo "${{secrets.DEPLOY_KEY}}" > deploy_key
+        chmod 600 ./deploy_key
+        rsync -chav --delete \
+          -O \
+          --no-perms \
+          -avzt --delete \
+          --chown=ubuntu:www-data --chmod=Dg=rwx,Fg=rwx \
+          -e 'ssh -i ./deploy_key -o StrictHostKeyChecking=no' \
+          --exclude /deploy_key \
+          --exclude /.git/ \
+          --exclude /.github/ \
+          --exclude /cache/ \
+          ./wp_data/wp-content/ ${{env.dest}}
+    # Update Database (With 'Update DB' commit)     
+    - name: Checkout Database
+      if: "contains(github.event.head_commit.message, 'Update DB')"
+      env:
+        dest: '${{secrets.DEPLOY_USERNAME}}@${{secrets.HOST_IP}}:${{ github.event.repository.name }}/dump/'
+      run: |
+        echo "${{secrets.DEPLOY_KEY}}" > deploy_key
+        chmod 600 ./deploy_key
+        rsync -chav --delete \
+          -O \
+          --no-perms \
+          --chown=${{ secrets.DEPLOY_USERNAME }}:www-data --chmod=Dg=rwx,Fg=rwx \
+          -e 'ssh -i ./deploy_key -o StrictHostKeyChecking=no' \
+          --exclude /deploy_key \
+          --exclude /.git/ \
+          --exclude /.github/ \
+          ./dump/ ${{env.dest}} 
+    - name: Import DB
+      uses: appleboy/ssh-action@v0.1.6
+      if: "contains(github.event.head_commit.message, 'Update DB')"
+      with:
+          host: ${{ secrets.HOST_IP }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          username: ${{ secrets.DEPLOY_USERNAME}}
+          port: 22
+          script: | 
+            cd ${{ github.event.repository.name }}
+            docker-compose run --rm wp-cli sh -c 'sh /usr/local/bin/import-wp' 
