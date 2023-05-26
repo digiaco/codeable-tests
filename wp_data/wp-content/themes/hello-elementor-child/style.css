@@ -1,0 +1,127 @@
+/*
+Theme Name:   Hello Elementor Child
+Theme URI:    #
+Description:  Hello Elementor Child Theme
+Author:       Roma
+Author URI:   #
+Template:     hello-elementor
+Version:      1.0.0
+Text Domain:  hello-elementor-child
+*/
+
+.d-flex {
+  display: flex;
+}
+
+.slider {
+  position: relative !important;
+  max-width: 1440px;
+  margin: 6rem auto 2rem !important;
+}
+
+.slider h2 {
+  margin: 2rem 0 5rem;
+}
+
+.slider ul li {
+  margin-bottom: 1.5rem;
+}
+
+.slider {
+  width: 100%;
+  margin: 30px 50px 50px;
+}
+
+.slick-prev:before,
+.slick-next:before {
+  color: black;
+}
+
+.slick-dots {
+  bottom: -30px;
+}
+
+.progressBarContainer {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1390px;
+  margin: 6rem auto 0;
+  padding-left: 2.6rem;
+}
+
+.progressBarContainer .item {
+  width: 100%;
+  margin-right: 2rem;
+  cursor: pointer;
+  transition: all 0.6s ease;
+}
+
+.progressBarContainer .item h3 {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.progressBarContainer .item.active small,
+.progressBarContainer .item.active h3 {
+  font-weight: 700;
+}
+
+.progressBarContainer .item:last-child {
+  margin-right: 0;
+}
+
+.progressBarContainer div span.progressBar {
+  width: 100%;
+  height: 4px;
+  background-color: #a1aebf;
+  display: block;
+  border-radius: 5px;
+}
+
+.progressBarContainer div.item.active {
+  margin-right: 6rem;
+  transition: all 0.6s ease;
+}
+
+.progressBarContainer div.item.active:last-child {
+  margin-right: 4rem;
+  transition: all 0.6s ease;
+}
+
+.progressBarContainer div.item.active span.progressBar {
+  width: calc(100% + 4rem);
+  transition: all 0.6s ease;
+}
+
+.progressBarContainer div span.progressBar .inProgress {
+  background-color: #21abe1;
+  width: 0%;
+  height: 4px;
+}
+
+.bdBtn > a {
+  font-size: 22px !important;
+}
+
+.nSlide {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.nSlide .slide-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  padding: 30px 30px 30px 60px;
+}
+
+.nSlide__btn {
+  padding: .5rem 1rem;
+  background-color: #001ad3;
+  font-size: 22px;
+  border-radius: 6px;
+  color: #fff !important;
+  text-decoration: none !important;
+  width: fit-content;
+  margin-top: 2rem;
+}
