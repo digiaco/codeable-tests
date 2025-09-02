@@ -192,3 +192,5 @@ To fix acorn cache problem on remote server, run ```chmod -R ubuntu:www-data wp_
 Run ```sh wp-sage.sh``` to build and star working with sage template<br />
 Make sure if acorn plugin and sage tamplate is active. <br />
 More docs in https://roots.io/sage/docs/
+
+<!-- Security scan triggered at 2025-09-02 04:51:51 -->
